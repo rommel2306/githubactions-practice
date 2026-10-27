@@ -26,7 +26,7 @@ jobs:
   job2-push-rommel:
     runs-on: ubuntu-latest
     steps:
-      - name: show wjhat rommel triighrte thi concurrency: 
+      - name: show wjhat rommel triighrte thi concurrency 
         run: |
           echo "EVENT NAME: $GITHUB_EVENT_NAME"               #.> PUSH NAME 
           echo "Branch ref : $GITHUB_REF"          # -> refs/heads/<branch>
