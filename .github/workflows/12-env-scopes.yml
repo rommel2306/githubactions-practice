@@ -1,0 +1,34 @@
+name: 12 - Env Scopes
+
+on: workflow_dispatch
+
+env:
+  NAME: onlevel-rommel
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    env:
+      NAME: job1level-rommel
+    steps:
+      - name: Uses workflow + job env
+        run: |
+          echo "my name is = $NAME"
+
+  job2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Uses workflow + job env
+        run: |
+          echo "my name is = $NAME"
+
+  job3:
+    runs-on: ubuntu-latest
+    env:
+      NAME: job3-level
+    steps:
+      - name: Uses workflow + job env
+        env:
+          NAME: Cloud Teacher
+        run: |
+          echo "my name is = $NAME"   
