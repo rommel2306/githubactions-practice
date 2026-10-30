@@ -38,6 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "✅ Everything passed. (You only see this when build is green.)"
+        run: exit 1
 
   job3:
     needs: job1
