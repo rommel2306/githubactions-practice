@@ -1,0 +1,47 @@
+name: 20 - Job Outputs
+
+on: workflow_dispatch
+
+jobs:
+  produce:
+    runs-on: ubuntu-latest
+
+    # STEP 2 of the chain: promote step outputs to JOB outputs.
+    outputs:
+      version:   ${{ steps.test.outputs.version }}
+      timestamp: ${{ steps.test.outputs.timestamp }}
+      changelog: ${{ steps.test.outputs.changelog }}
+
+    steps:
+      # STEP 1 of the chain: write to the special $GITHUB_OUTPUT file.
+      - name: Compute some metadata
+        id: test                   # <- the id is mandatory
+        run: |
+          VERSION="1.4.${{ github.run_number }}"
+          echo "version=$VERSION"            >> "$GITHUB_OUTPUT"
+          echo "timestamp=$(date -u +%FT%TZ)" >> "$GITHUB_OUTPUT"
+          echo "Computed version $VERSION"
+
+      - name: Accessing from another step
+        run: |
+          echo "${{ steps.test.outputs.version }}"
+
+      # MULTI-LINE values need a random delimiter. A bare newline would be
+      # read as the start of the next key and silently truncate your value.
+      - name: A multi-line output
+        id: notes
+        run: |
+          {
+            echo "changelog<<CHANGELOG_EOF"
+            echo "- Added job outputs"
+            echo "- Fixed the build"
+            echo "CHANGELOG_EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      # Inside the SAME job you read step outputs directly — no `needs`.
+      - name: Read it back in the same job
+        # YAML gotcha: an unquoted value cannot contain ": " — YAML reads it
+        # as a new key and rejects the file. Use a block scalar (|) like this,
+        # or quote the whole string.
+        run: |
+          echo "Same job sees: ${{ steps.test.outputs.version }}"
